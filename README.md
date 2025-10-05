@@ -228,6 +228,53 @@ In my case, this is `\$Mft::$DATA` ... which does not seem to be consistent with
 
 **IMPORTANT:** Re-enable system protection and Pagefile after shrinking the drive. Reenable hibernation too, if you want. I might, just 'cos.
 
+## Step 5: Turning down the volume...
+
+So, let's just try it. We're just gonna disable hibernation, disable Pagefile and disable system protection,
+and then we're going to restart my computer and see if we can grab any more than 40 GB.
+
+If not, we'll just reenable those features and take another look at this later.
+_Because we have that 16.60 GB free now to play with anyway, right?_
+
+### Step 5.1: Disabling hibernation
+
+Per documentation found here: https://learn.microsoft.com/en-us/troubleshoot/windows-client/setup-upgrade-and-drivers/disable-and-re-enable-hibernation
+
+We're going to open Command Prompt with administrator privileges and we're simply going to run:
+
+```
+powercfg.exe /hibernate off
+```
+
+To re-enable this, we will repeat the same steps and run the command with an `on` argument instead:
+
+```
+powercfg.exe /hibernate on
+```
+
+### Step 5.2: Disabling Pagefile
+
+1. Open system properties
+2. "Advanced" tab
+3. Open "Settings..." under the "Performance" heading
+4. "Advanced" tab
+5. Select "Change..." under the "Virtual memory" heading
+6. We're gonna deselect "Automatically manage [...]"
+7. We're gonna select "No paging file" and hit "Set"
+8. Restart computer
+
+To re-enable it, we should just be able to re-select "Automatically manage [...]"
+
+### Step 5.1: Disabling system protection
+
+1. Open system properties
+2. "System Protection" tab
+3. Select the C: drive and hit "Configure..."
+4. Select "Disable system protection" and hit apply
+
+To re-enable, we should just have to re-select "Turn on system protection" at that final step.
+Should we need to re-apply the setting under "Disk Space Usage", it currently shows as at 2% (9.18 GB) for "Max Usage".
+
 ---
 
 Also keep note of this: https://wiki.archlinux.org/title/EFI_system_partition#Replace_the_partition_with_a_larger_one
