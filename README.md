@@ -98,7 +98,7 @@ For now though, precisely what we want to do is delete the unlabelled factory re
 So let's go over what we would like to do at this point:
 
 1. Delete the unlabelled volume occupying 16.60 GB of space
-2. Extend the EFI System Partition volume to around 1 GB
+2. ~~Extend the EFI System Partition volume to around 1 GB~~ (_Bad info! See "Step 4"._)
 3. **MOVE** the EFI System Partition all the way to the left (**DANGEROUS!**)
 4. **MOVE** the hidden, reserved 16 MB partition leftwards too (**ALSO DANGEROUS!**)
 5. _We then, in theory, have 475 GB of adjacent space (unallocated and C:) to play with_
@@ -108,3 +108,127 @@ So let's go over what we would like to do at this point:
 > Isn't that a terrifying prospect?
 > Definitely worth pausing for thought at this point...
 
+## Step 3: I can ride my bike with no handlebars! (We're deleting the factory reset partition)
+
+Okay, so we know we can free up 16.60 GB of space by simply deleting that unlabelled partition.
+We know that it is intended for performing a factory reset... but we don't need that.
+We're clever little things; we don't need stabilisers on our bicycle.
+
+So, in Disk Management, let's right click and select "Delete volume...".
+This brings up a window telling us that the volume was not created by Windows and
+may contain data recognised by other operating systems.
+But we get a "Do you want to delete this partition?", "Yes" or "No" dialog.
+
+_I expect hitting "Yes" here will delete the partition and free up the space without issue._
+_But right now we're still "measuring twice"; we will take this step when we commit to the whole process._
+
+## Step 4: One does not simply walk the EFI partition to Mordor...
+
+Look, the _Lord of the Rings_ analogy is gonna fall apart instantly but it looks like we can't just "move" the EFI partition into the now free space.
+We have got to throw it into the fires of Mount Doom (delete it) instead. **NOT BEFORE** creating a new EFI partition, obviously.
+
+So... we'll create a new partition all the way to the left in the newly freed space.
+That part's easy. We'll make it 1 GB. And our computer should have no issue with these two EFI partitions both existing.
+The issue comes when we delete the original partition, which is... _oh boy,_ it's responsible for booting our computer.
+
+Yeah, this part is scary. But in theory, once we have the new EFI partition setup appropriately, and we have copied the data
+from the old partition to the new one...
+Well then our system should recognise the new EFI boot partition as though nothing's happened.
+Assume that it's formatted correctly, assume that all the data has been copied, and it should be functionally identical to the original partition (just in a different place and an order of magnitude bigger).
+
+We're going to be so careful about the steps we take here though.
+I'm advised that we may need to boot Windows from a USB? We'll see.
+Because here's the thing: We **CANNOT** delete a critical system partition while our system is running and dependent on it.
+I don't know what happens if we do? System crash? Does it become unbootable? Terrifying stuff.
+So let's get this properly figured the fuck out before we do anything.
+
+### Step 4.1: The layout we desire
+
+I guess it makes sense to describe what I want...
+
+Ideally, our newly unoccupied 16.60 GB would be claimable by my new Arch filesystem.
+But that's not all I want. I want to steal additional space from the C: drive (right now, I can shrink it by 40 GB even though there are 202 GB free - we'll come back to this).
+Let's say that that's all I want... I want to increase the size of my EFI partition to 1 GB and alott the other 15 GB plus, let's say, 40 GB from C: to my Arch drive...
+This should look like this:
+
+|  | **_Arch_** | **Blade Stealth (C:)** |  |
+| 1 GB | 55.6 GB | 419.19 GB | 1.04 GB |
+| EFI System Partition | _Arch filesystem_ | Boot, Page File, Crash Dump, Basic Data Partition | Recovery Partition |
+
+The two (and a half) problems with achieving that right now are...
+
+- The EFI system partition is badly positioned (and must be recreated and deleted)
+- We don't know how much the C: partition will shrink by on either side (that's how this works, right?); we might not get the full 40 GB on the left side
+- There exists that 16 MB reserved partition just before the C: partition and not shown (this too is in the way of claiming space, I would assume)
+
+There are two groups of steps towards achieving this result...
+
+#### Step 4.1.1: The easy part
+
+1. Delete the unlabelled factory reset partition, creating 16.60 GB of unallocated space
+2. Shrink the C: partition, creating 40 GB of unallocated space (falling either side of C:, we presume)
+
+#### Step 4.1.2: The hard part
+
+1. Create a new 1 GB EFI System Partition and copy data from original
+2. Delete old 100 MB EFI System Partition
+3. Unify the unallocated spaces (now roughly 15.60 GB and 40 GB = 55.60 GB)
+
+_Why is this hard? Because step 2 above is dangerous, and step 3 has potential blockers in how these partitions had been arranged._
+
+---
+
+Since Step 4.1.1 is "easy" it is worth doing straight away, I think.
+Following this, we will have a visual indication of... where we're at and what we have to work with.
+
+Certainly there's no harm in deleting the factory reset partition. I'll do that... now?
+
+**_Now?_** _Fuck!!_ Wish me luck!
+
+...
+
+Okay, we're good. We now have 16.60 GB of unallocated space over there.
+
+I'm going to hold off on the also "easy" action of shrinking C: by 40 GB.
+Here's my thinking: Maybe we can work with this 16.60 GB of space initially.
+We partition off 1 GB of space for a new EFI System Partition which will...
+It'll contain GRUB and be used to boot Linux (eventually also Windows).
+And we just install Arch in the other 15.60 GB of available space.
+We can increase it later...
+
+That might be an approach. Ah, but no...
+
+## A thought occurs!
+
+We interrupt these numbered titles because I've stepped away from my computer for a bit and a couple of thoughts came to mind:
+
+1. The reason I can only get 40 GB from C: is because of some immovable files, but I came across some information earlier that might help me reclaim more...
+2. Even though there is adjacent space, the option to extend the EFI System Drive into it isn't available. Since the ArchWiki recommends resizing it, perhaps the docs go into doing that in such a way where we could successfully move it too?
+
+To point one, we can do a few things to address these "immovable files". We can...
+
+1. Disable hibernation (I never use it anyway)
+2. Disable Pagefile (it's virtual memory that extends the physical RAM - not strictly necessary, but Windows might depend on it in some circumstances)
+3. Disable system protection/system restore
+
+_All info per this article here: https://www.thewindowsclub.com/shrink-volume-with-unmovable-files-in-windows_
+
+Note that there is some info at the beginning of the article too about uncovering the unmovable files blocking us in Windows Event Viewer.
+That will be worth a look.
+
+1. <kbd>Win+R</kbd>
+2. `eventvwr`
+3. Windows Logs
+4. Application
+5. Actions -> "Filter Current Log"
+6. In "Filter Current Log" window: "Event Sources" -> Defrag
+7. Explore the logs looking for "The last immovable file appears to be: [...]"
+
+In my case, this is `\$Mft::$DATA` ... which does not seem to be consistent with any of the above disabling suggestions but... well, we step through the problem bit by bit, byte by byte!
+
+**IMPORTANT:** Re-enable system protection and Pagefile after shrinking the drive. Reenable hibernation too, if you want. I might, just 'cos.
+
+---
+
+Also keep note of this: https://wiki.archlinux.org/title/EFI_system_partition#Replace_the_partition_with_a_larger_one
+It's ArchWiki's approach to creating a new EFI System Partition. USEFUL!!!!
