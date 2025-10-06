@@ -395,6 +395,26 @@ We should prepare for that step next.
 
 > **IMPORTANT!** Per the above section, do not forget to disable Secure Boot in the system BIOS prior to installing Arch Linux.
 
+We're ready to begin installation, but there appear to be a few ways about this.
+
+I'm also still unsure how Arch will go about knowing which disk partitions to use.
+That is, how will I inform the installation to use the pre-existing EFI System Partition for boot installation
+and the 174.88 GB of now "unallocated" space for my Arch Linux filesystem.
+
+Do I simply... tell it to use these spaces? If so, how? Is it by ID? How do I even obtain the ID of the EFI partition? 😕
+
+Documentation online talks about mounting to `/boot` and `/`. These are familiar patterns to me.
+They look like filesystem directories. But um... that's obviously quite alien compared with what I've been doing these past few hours.
+
+_Another thing that's concerning me is the presence of "Boot" in my "Blade Stealth (C:)" partition._
+_But I'm going to relax about that, as screenshots of others' Disk Management results show a "Boot" in their C drives too._
+
+This is just... I mean, it's expected. I spend most of my time in Linux filesystems anyway. Windows is the alien here.
+I'm just confusing myself in the translation. I won't be installing Arch tonight. But we're close.
+My next big run at this is all about installing Arch (probably manually too, rather than using `archinstall`).
+
+> **IMPORTANT!** I really also need to ensure that I back up anything critical. Most stuff already is; I just need to double-check it.
+
 ---
 
 Also keep note of this: https://wiki.archlinux.org/title/EFI_system_partition#Replace_the_partition_with_a_larger_one
