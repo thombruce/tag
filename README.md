@@ -436,3 +436,40 @@ We're otherwise kind of ready to begin an attempt at installing Arch Linux...
 
 _...after considerably more consumption of the wiki docs, I mean. I still need to know, step-by-step,_
 _what I'm going to be doing to install and configure the system._
+
+---
+
+It's a brand new day!
+
+Disabling Secure Boot was straightforward, but you do have to be a ninja.
+The BIOS options flash by so quickly on startup, you barely have a chance to read the keybindings.
+
+<kbd>F12</kbd> got me into the BIOS menu on my machine. <kbd>F10</kbd> or <kbd>DEL</kbd> would have gotten me straight into the BIOS config.
+
+In there, I have disabled both "Secure Boot" and "Fast Boot".
+No guidance was given suggesting that "Fast Boot" ought to be disabled here, but I DuckDuckGoggled it and some people reported having issues when this was left enabled.
+Seemed like the safest bet just to disable that.
+
+With that done, we are ready to initiate a boot from the Arch Linux USB I already prepared and actually start setting up Arch.
+
+### Step 7.3: Managing partitions (HARD MODE)
+
+I know that the first couple of things I need to do when I'm setting up Arch are...
+
+1. Assign the UEFI System Partition appropriately for the Linux boot...
+2. Assign the unallocated space I freed up yesterday to the Arch Linux filesystem
+
+This is another part that scares me, because the docs aren't super clear about how to achieve this.
+
+In fact, the ArchWiki at this point appears to assume either a lot of pre-existing knowledge or simply that this might be handled differently per user.
+
+That's not great. I just need clear steps.
+
+At this point then... hmm... I'm going to need to again read and re-read some docs, some blogs.
+Make sure I have access to these from a secondary device for reference.
+
+There is a terrifying risk at this point that we accidentally overwrite the UEFI System Partition or my C: drive, I think.
+Every step I take here, I need to be **SO... FUCKING... SURE OF!**
+
+Should be fine. Should be good.
+
