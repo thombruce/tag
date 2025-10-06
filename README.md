@@ -473,3 +473,26 @@ Every step I take here, I need to be **SO... FUCKING... SURE OF!**
 
 Should be fine. Should be good.
 
+I think the clearest guide I've found to the rest of the installation is this blog post from nic96.dev: https://nic96.dev/blog/beginners-guide-dual-booting-arch-linux-windows/
+
+Nick uses `archinstall` later in the guide, but an earlier section on setting up partitions reads clearly and is illustrated with screenshots.
+
+I'm not so sure I want to `archinstall`. More reading required...
+
+_I mean in theory I'm fine with it, it would get me through the installation process a lot more simply._
+_But it seems antithetical to the Arch approach... which is to painstakingly set up everything manually._
+_To actually KNOW every little detail you tweaked._
+_The Arch wiki doesn't explicitly recommend against `archinstall`, but it does say to mention that you've used this when filing bug reports or seeking assistance_
+_as it results in a different set of configurations/parameters than a "typical" install._
+_I'm gonna try to read the vibes of the community on this one..._
+
+### Step 7.4: To `archinstall` or not to `archinstall`, that is the question!
+
+The most glaring caveat to me with regards to using `archinstall` is that it sets up `systemd-boot` as the bootloader.
+I'm pretty sure I want to use GRUB2.
+
+The issue here is... I'm a beginner and essentially reading beginner's guides.
+The recommended approach for beginners is going to be this simpler, guided installation.
+I just... I _know_ it isn't what I want. So...
+Gonna have to become an expert on the fly here. No biggie!
+
