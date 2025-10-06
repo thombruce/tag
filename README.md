@@ -265,7 +265,7 @@ powercfg.exe /hibernate on
 
 To re-enable it, we should just be able to re-select "Automatically manage [...]"
 
-### Step 5.1: Disabling system protection
+### Step 5.3: Disabling system protection
 
 1. Open system properties
 2. "System Protection" tab
@@ -274,6 +274,126 @@ To re-enable it, we should just be able to re-select "Automatically manage [...]
 
 To re-enable, we should just have to re-select "Turn on system protection" at that final step.
 Should we need to re-apply the setting under "Disk Space Usage", it currently shows as at 2% (9.18 GB) for "Max Usage".
+
+### Step 5.4: So, it didn't work...
+
+We still only have the capability to shrink the C: partition by 40 GB.
+`\$Mft::$DATA` continues to stand in our way... I presume. I'll check!
+
+I does say this "appears to be" the blocking file though... and I did see advice online earlier saying...
+basically, shrink the volume anyway. You might be able to continue shrinking after.
+So I'm gonna do that. The volume is now being shrunk.
+
+This has created 39.77 GB of unallocated space to "the right" of the C: drive. And...
+
+Unfortunately, we can shrink it no further. Let's re-enable those features then, and then we'll...
+
+Then we'll deal with the spaces we're looking at.
+
+### Step 5.5: Defrag, maybe?
+
+I've run defrag on the C volume to see if this will consolidate and free up the space being blocked by that weird entry.
+
+As of now, I'm still getting 0 MB as available shrink space... Okay...
+
+I am going to look at the shrinking option again after one more restart, but I anticipate it will still show 0.
+In which case... the next recommendation is for third-party partitioning tools, per this answer on Microsoft Learn: https://learn.microsoft.com/en-us/answers/questions/3909152/cannot-shrink-volume-due-to-unmovable-file-mft-dat
+
+_Why third-party? Well, according to "Dave" Windows just had limited partitioning capabilities. This third-party tool... should apparently do a little more?_ 🤔
+
+So at this point I have downloaded AOMEI Partition Assistant Standard Addition. It's freeware that wants to upsell you the pro version whenever you open it, but it's already yielding some good information...
+
+It won't let me resize or move (_wait, move?_ yeah, I know!!) any of my partitions unless I disable BitLocker Device Encryption.
+
+Totally happy to do that temporarily, but right now I need to take a break... Then again...
+
+Disabling BitLocker encryption might take an amount of time. 🤔 I could certainly start it while taking a break.
+I just need to turn it back on tonight or early tomorrow. Fuck it, yeah. Let's disable BitLocker and see if we can't
+do a bit more with our partitions after that.
+
+### Step 5.6: Disabling BitLocker
+
+Takes a minute, but it's a straightforward process.
+
+### Step 5.7: Third-party partition management to the rescue!
+
+With BitLocker encryption disabled, AOMEI Partition Assistant was able to resize C: down to 300 GB (an arbitrary number, chosen because it was the closest round number - there will be more resizing/moving in future).
+
+Again, this is a straightforward process not much worth documenting...
+
+Just be careful and understand that AOMEI can have several jobs queued at once before applying the changes.
+In this case, I only wanted to shrink C so... read the information provided as it comes up, sit back, and AOMEI will achieve the result for you.
+
+...
+
+After probably not enough thought... I decided to go ahead and move all of my partitions using that AOMEI tool.
+I trusted that if I was about to do anything particularly scary, it would warn me... and err, well, it didn't.
+
+I now have a 1 GB EFI System Partition to the far left hand side of the disk image.
+This is followed by the 16 MB Microsoft Reserved Partition.
+This is followed by a 300.0 GB partition for my C: drive and... hey, the fact that I'm writing this means this is all still functional. Hell yeah! 🔥
+Then we have 174.88 GB of unallocated space. This will be the space for my new Arch Linux filesystem.
+And finally, there's the 1.04 GB recovery partition; this is at the end of the disk and is the only partition not moved or resized at all during this process.
+
+Okay, big recommendation for AOMEI here. That all kind of just worked like magic.
+
+## Step 6: Windows Settings
+
+I've come across two things that need to be altered while rambling through the wiki pages...
+
+1. We need to disable UEFI Secure Boot; this is an essential step, I believe. I don't know if we can turn it back on later either as we're going to be installing a new boot manager... Must investigate.
+2. We should set Windows' system time to UTC
+
+To point two above, there is more information here: https://wiki.archlinux.org/title/System_time#UTC_in_Microsoft_Windows
+
+Unlike Unix systems, Windows uses localtime by default instead of UTC.
+Fixing this is straightforward though. One command that we can run in a command prompt with administrator privileges:
+
+```
+reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation" /v RealTimeIsUniversal /d 1 /t REG_DWORD /f
+```
+
+We're fucking with registry values here, which I don't know a lot about so a lot of that is foreign to me, but I can see the gist of it.
+May as well run that now.
+
+**Done!!** Nothing visible changes. All it says is "The operation completed successfully." I'm going to trust that it did.
+
+I won't disable secure boot yet. I want to be ready to move forwards with the Linux installation before I do that.
+
+Also... can I reenable BitLocker encryption at this point?
+
+... I think not. And I think ultimately we will be encrypting via a different method.
+
+I have at this point, per the wiki, disabled hibernation again:
+
+```
+powercfg /H off
+```
+
+The one Windows setting I still need to amend is... I need to disable UEFI Secure Boot.
+The wiki describes this as... rather complicated.
+
+### Step 6.1: Rather complicated (disabling UEFI Secure Boot)
+
+Info: https://wiki.archlinux.org/title/Dual_boot_with_Windows#UEFI_Secure_Boot
+
+We actually need to do this from the BIOS menu, which means restarting my computer and entering the BIOS rather than allowing Windows to boot.
+
+This means no access to this Neovim, or my browser... I'm gonna have to bring the information up on my phone.
+
+We're going to follow the most authoritative source for this, Microsoft themselves: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/disabling-secure-boot?view=windows-11&preserve-view=true#disable-secure-boot
+
+However... we only need to do that when we're ready to install Linux. As of now, we aren't. I haven't prepared a disk image.
+
+Just know that that is **IMPORTANT!** and needs to be done prior to Arch Linux installation.
+
+In fact, it is the last thing we need to do before Arch Linux installation. So...
+
+We should prepare for that step next.
+
+## Step 7: Do you even Arch Linux, bro? (Installing Arch)
+
+> **IMPORTANT!** Per the above section, do not forget to disable Secure Boot in the system BIOS prior to installing Arch Linux.
 
 ---
 
