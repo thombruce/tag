@@ -496,3 +496,14 @@ The recommended approach for beginners is going to be this simpler, guided insta
 I just... I _know_ it isn't what I want. So...
 Gonna have to become an expert on the fly here. No biggie!
 
+### Step 7.What?: The installation begins...
+
+7.What? because this _was_ 7.3, right? I just veered off to decide whether or not to use `archinstall` - I'm not going to.
+
+At this point, I can either keep putting it off or I can begin an attempt at installation.
+
+Everything that's important to me should be backed up anyway - most of it existing somewhere in the cloud, be that on GitHub or in Dropbox.
+
+I won't be able to update this weird ass guide while I'm attempting this, so we begin a period of silence and confusion.
+
+I'll try to document my process for recording here later.
