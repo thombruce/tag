@@ -419,3 +419,20 @@ My next big run at this is all about installing Arch (probably manually too, rat
 
 Also keep note of this: https://wiki.archlinux.org/title/EFI_system_partition#Replace_the_partition_with_a_larger_one
 It's ArchWiki's approach to creating a new EFI System Partition. USEFUL!!!!
+
+### Step 7.1: Flash, Aaah!
+
+So, I've downloaded Rufus (apparently I already had this installed, I've just downloaded a newer version)
+and I've used this to create write an Arch Linux ISO onto a spare USB flash drive I had lying around.
+
+Rufus also allows us to check the signatures of the file we're writing, by the way. Good for verifying the
+authenticity of the Arch ISO.
+
+### Step 7.2: Disable Secure Boot, I guess...
+
+This _might_ be the very next thing to do. 🤔
+
+We're otherwise kind of ready to begin an attempt at installing Arch Linux...
+
+_...after considerably more consumption of the wiki docs, I mean. I still need to know, step-by-step,_
+_what I'm going to be doing to install and configure the system._
